@@ -4,20 +4,17 @@ library(dplyr)
 
 
 #edit file name
-file_name=c('CDK46i_1')
+file_name=c('Contact_Inhibition_2')
 
 
 setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-dataFile <- select(dataFile_raw, 3:12)
+dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
+dataFile <- select(dataFile_raw, 4:7)
 
 ##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-                                                                 "Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"), 
-                        libType=c("single-end","single-end","single-end","single-end","single-end",
-                                  "single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-                     "Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
+dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp","Exp","Ctl","Ctl"), 
+                        libType=c("single-end","single-end","single-end","single-end","single-end"))
+condition = factor(c("Exp","Exp","Ctl","Ctl"))
 
 
 #The rest should run without modification
@@ -31,7 +28,7 @@ str(fitInfo(cds))
 png(paste0(file_name, '.png'))
 plotDispEsts(cds)
 dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
+res = nbinomTest(cds,"Exp","Ctl")
 png(paste0(file_name, '.png'))
 plotMA(res, ylim=c(-8,8))
 ##take out infinite values and NaN values and replot MA plot
@@ -50,6 +47,6 @@ resSig = resSig[ order(resSig$pval), ]
 
 
 write.table(resSig,paste0(file_name, '_output.csv'),quote=FALSE,sep=',',row.names=FALSE)
-write.table(tbl_res_no_inf,paste0(file_name, 'output_no_inf.csv'),quote=FALSE,sep=',',row.names=FALSE)
+write.table(tbl_res_no_inf,paste0(file_name, '_output_no_inf.csv'),quote=FALSE,sep=',',row.names=FALSE)
 savehistory(file=paste0(file_name, '.txt'))
 

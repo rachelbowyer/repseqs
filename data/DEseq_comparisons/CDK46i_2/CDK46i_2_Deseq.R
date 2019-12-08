@@ -4,7 +4,7 @@ library(dplyr)
 
 
 #edit file name
-file_name=c('CDK46i_frac')
+file_name=c('CDK46i_2')
 
 
 setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
@@ -28,7 +28,7 @@ str(fitInfo(cds))
 png(paste0(file_name, '.png'))
 plotDispEsts(cds)
 dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
+res = nbinomTest(cds,"Exp","Ctl")
 png(paste0(file_name, '.png'))
 plotMA(res, ylim=c(-8,8))
 ##take out infinite values and NaN values and replot MA plot
