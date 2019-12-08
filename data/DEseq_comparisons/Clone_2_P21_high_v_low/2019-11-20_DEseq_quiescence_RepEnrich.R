@@ -8,8 +8,8 @@ file_name=c('Clone_2_P21_high_v_low')
 
 
 setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-dataFile <- select(dataFile_raw, 3:12)
+dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
+dataFile <- select(dataFile_raw, 4:13)
 
 ##edit experiment design
 dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
