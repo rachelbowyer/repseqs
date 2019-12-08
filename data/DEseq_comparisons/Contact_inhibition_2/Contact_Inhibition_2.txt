@@ -1,163 +1,15 @@
-file_name=c('Clone_2_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-dataFile <- select(dataFile_raw, 3:12)
-##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"),
-libType=c("single-end","single-end","single-end","single-end","single-end",
-"single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
-#The rest should run without modification
-cds = newCountDataSet(dataFile,condition)
-cds = estimateSizeFactors(cds)
-sizeFactors(cds)
-normTable = counts(cds,normalized=TRUE)
-write.table(normTable,paste0(file_name, '.txt'),quote=FALSE,sep='\t')
-cds = estimateDispersions(cds, method='pooled')
-str(fitInfo(cds))
-png(paste0(file_name, '.png'))
-plotDispEsts(cds)
-dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
-png(paste0(file_name, '.png'))
-plotMA(res, ylim=c(-8,8))
-##take out infinite values and NaN values and replot MA plot
-#convert res to tbl and remove -Inf and Inf values
-tbl_res <- tbl_df(res)
-tbl_res_no_inf <- filter(tbl_res, log2FoldChange != -Inf, log2FoldChange != Inf)
-png(paste0(file_name, '.png'))
-plotMA(tbl_res_no_inf)
-dev.off()
-resSig = res[ res$padj < 0.05, ]
-resSig = res
-resSig = resSig[ order(resSig$pval), ]
-#add info to no_inf_file
-write.table(resSig,paste0(file_name, '_output.csv'),quote=FALSE,sep=',')
-write.table(tbl_res_no_inf,paste0(file_name, 'output_no_inf.csv'),quote=FALSE,sep=',')
-savehistory(file=paste0(file_name, '.txt'))
 ##This script calculates differential expression between two different samples
 library(DESeq)
 library(dplyr)
 #edit file name
-file_name=c('Clone_2_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-dataFile <- select(dataFile_raw, 3:12)
-##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"),
-libType=c("single-end","single-end","single-end","single-end","single-end",
-"single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
-#The rest should run without modification
-cds = newCountDataSet(dataFile,condition)
-cds = estimateSizeFactors(cds)
-sizeFactors(cds)
-normTable = counts(cds,normalized=TRUE)
-write.table(normTable,paste0(file_name, '.txt'),quote=FALSE,sep='\t')
-cds = estimateDispersions(cds, method='pooled')
-str(fitInfo(cds))
-png(paste0(file_name, '.png'))
-plotDispEsts(cds)
-dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
-png(paste0(file_name, '.png'))
-plotMA(res, ylim=c(-8,8))
-##take out infinite values and NaN values and replot MA plot
-#convert res to tbl and remove -Inf and Inf values
-tbl_res <- tbl_df(res)
-tbl_res_no_inf <- filter(tbl_res, log2FoldChange != -Inf, log2FoldChange != Inf)
-png(paste0(file_name, '.png'))
-plotMA(tbl_res_no_inf)
-dev.off()
-resSig = res[ res$padj < 0.05, ]
-resSig = res
-resSig = resSig[ order(resSig$pval), ]
-#add info to no_inf_file
-write.table(resSig,paste0(file_name, '_output.csv'),quote=FALSE,sep=',',row.names=FALSE)
-write.table(tbl_res_no_inf,paste0(file_name, 'output_no_inf.csv'),quote=FALSE,sep=',',row.names=FALSE)
-savehistory(file=paste0(file_name, '.txt'))
-##This script calculates differential expression between two different samples
-library(DESeq)
-library(dplyr)
-#edit file name
-file_name=c('Clone_2_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-dataFile <- select(dataFile_raw, 3:12)
-##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"),
-libType=c("single-end","single-end","single-end","single-end","single-end",
-"single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
-#The rest should run without modification
-cds = newCountDataSet(dataFile,condition)
-cds = estimateSizeFactors(cds)
-sizeFactors(cds)
-normTable = counts(cds,normalized=TRUE)
-write.table(normTable,paste0(file_name, '.txt'),quote=FALSE,sep='\t')
-cds = estimateDispersions(cds, method='pooled')
-str(fitInfo(cds))
-png(paste0(file_name, '.png'))
-plotDispEsts(cds)
-dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
-png(paste0(file_name, '.png'))
-plotMA(res, ylim=c(-8,8))
-##take out infinite values and NaN values and replot MA plot
-#convert res to tbl and remove -Inf and Inf values
-tbl_res <- tbl_df(res)
-tbl_res_no_inf <- filter(tbl_res, log2FoldChange != -Inf, log2FoldChange != Inf)
-png(paste0(file_name, '.png'))
-plotMA(tbl_res_no_inf)
-dev.off()
-resSig = res[ res$padj < 0.05, ]
-resSig = res
-resSig = resSig[ order(resSig$pval), ]
-#add info to no_inf_file
-write.table(resSig,paste0(file_name, '_output.csv'),quote=FALSE,sep=',',row.names=FALSE)
-write.table(tbl_res_no_inf,paste0(file_name, '_output_no_inf.csv'),quote=FALSE,sep=',',row.names=FALSE)
-savehistory(file=paste0(file_name, '.txt'))
-View(dataFile)
-View(dataFile_raw)
-##This script calculates differential expression between two different samples
-library(DESeq)
-library(dplyr)
-#edit file name
-file_name=c('Clone_1_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-#edit file name
-file_name=c('Clone_1_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-View(dataFile_raw)
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
-View(dataFile_raw)
-dataFile <- select(dataFile_raw, 3:12)
-View(dataFile)
-dataFile <- select(dataFile_raw, 4:13)
-View(dataFile)
-##This script calculates differential expression between two different samples
-library(DESeq)
-library(dplyr)
-#edit file name
-file_name=c('Clone_1_P21_high_v_low')
+file_name=c('CDK46i_1')
 setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
 dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
-dataFile <- select(dataFile_raw, 4:13)
+dataFile <- select(dataFile_raw, 4:7)
 ##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"),
-libType=c("single-end","single-end","single-end","single-end","single-end",
-"single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
+dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp","Exp","Ctl","Ctl"),
+libType=c("single-end","single-end","single-end","single-end","single-end"))
+condition = factor(c("Exp","Exp","Ctl","Ctl"))
 #The rest should run without modification
 cds = newCountDataSet(dataFile,condition)
 cds = estimateSizeFactors(cds)
@@ -190,17 +42,14 @@ savehistory(file=paste0(file_name, '.txt'))
 library(DESeq)
 library(dplyr)
 #edit file name
-file_name=c('Clone_1_P21_high_v_low')
+file_name=c('CDK46i_1')
 setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
 dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
-dataFile <- select(dataFile_raw, 4:13)
+dataFile <- select(dataFile_raw, 4:7)
 ##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"),
-libType=c("single-end","single-end","single-end","single-end","single-end",
-"single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
+dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp","Exp","Ctl","Ctl"),
+libType=c("single-end","single-end","single-end","single-end","single-end"))
+condition = factor(c("Exp","Exp","Ctl","Ctl"))
 #The rest should run without modification
 cds = newCountDataSet(dataFile,condition)
 cds = estimateSizeFactors(cds)
@@ -212,7 +61,7 @@ str(fitInfo(cds))
 png(paste0(file_name, '.png'))
 plotDispEsts(cds)
 dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
+res = nbinomTest(cds,"Exp","Ctl")
 png(paste0(file_name, '.png'))
 plotMA(res, ylim=c(-8,8))
 ##take out infinite values and NaN values and replot MA plot
@@ -233,17 +82,14 @@ savehistory(file=paste0(file_name, '.txt'))
 library(DESeq)
 library(dplyr)
 #edit file name
-file_name=c('Clone_2_P21_high_v_low')
+file_name=c('CDK46i_1')
 setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-dataFile <- select(dataFile_raw, 3:12)
+dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
+dataFile <- select(dataFile_raw, 4:7)
 ##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"),
-libType=c("single-end","single-end","single-end","single-end","single-end",
-"single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
+dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp","Exp","Ctl","Ctl"),
+libType=c("single-end","single-end","single-end","single-end","single-end"))
+condition = factor(c("Exp","Exp","Ctl","Ctl"))
 #The rest should run without modification
 cds = newCountDataSet(dataFile,condition)
 cds = estimateSizeFactors(cds)
@@ -255,7 +101,7 @@ str(fitInfo(cds))
 png(paste0(file_name, '.png'))
 plotDispEsts(cds)
 dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
+res = nbinomTest(cds,"Exp","Ctl")
 png(paste0(file_name, '.png'))
 plotMA(res, ylim=c(-8,8))
 ##take out infinite values and NaN values and replot MA plot
@@ -276,28 +122,14 @@ savehistory(file=paste0(file_name, '.txt'))
 library(DESeq)
 library(dplyr)
 #edit file name
-file_name=c('Clone_1_P21_high_v_low')
+file_name=c('CDK46i_2')
 setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
 dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
-dataFile <- select(dataFile_raw, 4:13)
-View(dataFile)
-View(dataFile_raw)
-View(dataFile)
-##This script calculates differential expression between two different samples
-library(DESeq)
-library(dplyr)
-#edit file name
-file_name=c('Clone_1_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
-dataFile <- select(dataFile_raw, 4:13)
+dataFile <- select(dataFile_raw, 4:7)
 ##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"),
-libType=c("single-end","single-end","single-end","single-end","single-end",
-"single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
+dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp","Exp","Ctl","Ctl"),
+libType=c("single-end","single-end","single-end","single-end","single-end"))
+condition = factor(c("Exp","Exp","Ctl","Ctl"))
 #The rest should run without modification
 cds = newCountDataSet(dataFile,condition)
 cds = estimateSizeFactors(cds)
@@ -309,7 +141,54 @@ str(fitInfo(cds))
 png(paste0(file_name, '.png'))
 plotDispEsts(cds)
 dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
+res = nbinomTest(cds,"Exp","Ctl")
+png(paste0(file_name, '.png'))
+plotMA(res, ylim=c(-8,8))
+##take out infinite values and NaN values and replot MA plot
+#convert res to tbl and remove -Inf and Inf values
+tbl_res <- tbl_df(res)
+tbl_res_no_inf <- filter(tbl_res, log2FoldChange != -Inf, log2FoldChange != Inf)
+png(paste0(file_name, '.png'))
+plotMA(tbl_res_no_inf)
+dev.off()
+resSig = res[ res$padj < 0.05, ]
+resSig = res
+resSig = resSig[ order(resSig$pval), ]
+#add info to no_inf_file
+write.table(resSig,paste0(file_name, '_output.csv'),quote=FALSE,sep=',',row.names=FALSE)
+write.table(tbl_res_no_inf,paste0(file_name, '_output_no_inf.csv'),quote=FALSE,sep=',',row.names=FALSE)
+savehistory(file=paste0(file_name, '.txt'))
+library(DESeq)
+library(dplyr)
+#edit file name
+file_name=c('Contact_Inhibition_1')
+setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
+dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
+dataFile <- select(dataFile_raw, 4:7)
+##This script calculates differential expression between two different samples
+library(DESeq)
+library(dplyr)
+#edit file name
+file_name=c('Contact_Inhibition_1')
+setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
+dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
+dataFile <- select(dataFile_raw, 4:7)
+##edit experiment design
+dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp","Exp","Ctl","Ctl"),
+libType=c("single-end","single-end","single-end","single-end","single-end"))
+condition = factor(c("Exp","Exp","Ctl","Ctl"))
+#The rest should run without modification
+cds = newCountDataSet(dataFile,condition)
+cds = estimateSizeFactors(cds)
+sizeFactors(cds)
+normTable = counts(cds,normalized=TRUE)
+write.table(normTable,paste0(file_name, '.txt'),quote=FALSE,sep='\t')
+cds = estimateDispersions(cds, method='pooled')
+str(fitInfo(cds))
+png(paste0(file_name, '.png'))
+plotDispEsts(cds)
+dev.off()
+res = nbinomTest(cds,"Exp","Ctl")
 png(paste0(file_name, '.png'))
 plotMA(res, ylim=c(-8,8))
 ##take out infinite values and NaN values and replot MA plot
@@ -330,44 +209,14 @@ savehistory(file=paste0(file_name, '.txt'))
 library(DESeq)
 library(dplyr)
 #edit file name
-file_name=c('Clone_2_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-dataFile <- select(dataFile_raw, 3:12)
-View(dataFile)
-View(dataFile)
-View(dataFile_raw)
-View(dataFile_raw)
-View(dataFile)
-View(dataFile_raw)
-View(dataFile)
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-View(dataFile_raw)
-#edit file name
-file_name=c('Clone_2_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-dataFile <- select(dataFile_raw, 4:12)
-View(dataFile)
+file_name=c('Contact_Inhibition_1')
 setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
 dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
-dataFile <- select(dataFile_raw, 4:12)
-View(dataFile)
-##This script calculates differential expression between two different samples
-library(DESeq)
-library(dplyr)
-#edit file name
-file_name=c('Clone_1_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-dataFile <- select(dataFile_raw, 4:13)
+dataFile <- select(dataFile_raw, 4:7)
 ##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"),
-libType=c("single-end","single-end","single-end","single-end","single-end",
-"single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
+dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp","Exp","Ctl","Ctl"),
+libType=c("single-end","single-end","single-end","single-end","single-end"))
+condition = factor(c("Exp","Exp","Ctl","Ctl"))
 #The rest should run without modification
 cds = newCountDataSet(dataFile,condition)
 cds = estimateSizeFactors(cds)
@@ -379,7 +228,7 @@ str(fitInfo(cds))
 png(paste0(file_name, '.png'))
 plotDispEsts(cds)
 dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
+res = nbinomTest(cds,"Exp","Ctl")
 png(paste0(file_name, '.png'))
 plotMA(res, ylim=c(-8,8))
 ##take out infinite values and NaN values and replot MA plot
@@ -400,36 +249,14 @@ savehistory(file=paste0(file_name, '.txt'))
 library(DESeq)
 library(dplyr)
 #edit file name
-file_name=c('Clone_1_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=1)
-dataFile <- select(dataFile_raw, 4:13)
-View(dataFile_raw)
-View(dataFile)
-##This script calculates differential expression between two different samples
-library(DESeq)
-library(dplyr)
-#edit file name
-file_name=c('Clone_1_P21_high_v_low')
+file_name=c('Contact_Inhibition_2')
 setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
 dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
-dataFile <- select(dataFile_raw, 4:13)
-View(dataFile)
-##This script calculates differential expression between two different samples
-library(DESeq)
-library(dplyr)
-#edit file name
-file_name=c('Clone_1_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
-dataFile <- select(dataFile_raw, 4:13)
+dataFile <- select(dataFile_raw, 4:7)
 ##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"),
-libType=c("single-end","single-end","single-end","single-end","single-end",
-"single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
+dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp","Exp","Ctl","Ctl"),
+libType=c("single-end","single-end","single-end","single-end","single-end"))
+condition = factor(c("Exp","Exp","Ctl","Ctl"))
 #The rest should run without modification
 cds = newCountDataSet(dataFile,condition)
 cds = estimateSizeFactors(cds)
@@ -441,7 +268,7 @@ str(fitInfo(cds))
 png(paste0(file_name, '.png'))
 plotDispEsts(cds)
 dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
+res = nbinomTest(cds,"Exp","Ctl")
 png(paste0(file_name, '.png'))
 plotMA(res, ylim=c(-8,8))
 ##take out infinite values and NaN values and replot MA plot
@@ -462,26 +289,14 @@ savehistory(file=paste0(file_name, '.txt'))
 library(DESeq)
 library(dplyr)
 #edit file name
-file_name=c('Clone_2_P21_high_v_low')
+file_name=c('Contact_Inhibition_2')
 setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
 dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
-dataFile <- select(dataFile_raw, 4:13)
-View(dataFile)
-##This script calculates differential expression between two different samples
-library(DESeq)
-library(dplyr)
-#edit file name
-file_name=c('Clone_2_P21_high_v_low')
-setwd(paste0('~/software_engineering_for_scientists/quiescence_project/repseqs/data/DEseq_comparisons/', file_name, '/'))
-dataFile_raw = read.delim(paste0(file_name,'.csv'),sep=',',header=TRUE,row.names=2)
-dataFile <- select(dataFile_raw, 4:13)
+dataFile <- select(dataFile_raw, 4:7)
 ##edit experiment design
-dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"),
-libType=c("single-end","single-end","single-end","single-end","single-end",
-"single-end","single-end","single-end","single-end","single-end"))
-condition = factor(c("Exp2","Exp2","Exp2","Exp2","Exp2",
-"Ctl2","Ctl2","Ctl2","Ctl2","Ctl2"))
+dataDesign = data.frame(rows.name=colnames(dataFile),condition=c("Exp","Exp","Ctl","Ctl"),
+libType=c("single-end","single-end","single-end","single-end","single-end"))
+condition = factor(c("Exp","Exp","Ctl","Ctl"))
 #The rest should run without modification
 cds = newCountDataSet(dataFile,condition)
 cds = estimateSizeFactors(cds)
@@ -493,7 +308,7 @@ str(fitInfo(cds))
 png(paste0(file_name, '.png'))
 plotDispEsts(cds)
 dev.off()
-res = nbinomTest(cds,"Exp2","Ctl2")
+res = nbinomTest(cds,"Exp","Ctl")
 png(paste0(file_name, '.png'))
 plotMA(res, ylim=c(-8,8))
 ##take out infinite values and NaN values and replot MA plot
