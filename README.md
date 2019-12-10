@@ -6,6 +6,10 @@ What can repeated elements in cells tell us about quiescence?  Look at the file 
 ![](MA_plot.jpg)
 ![](rep_ele_change.jpg)
 
+## Data Cleaning and Processing
+The folder raw_data in this repository has data that has already been processed below is a sketch of how that processing occured and how this project workflow was in total
+
+![](pipeline.jpg)
 
 ## Modules, Scripts, and Files
 *data_sort.py*:  The data for this project is held in 40 folders that each have three files in them: (1) a class fraction count file, (2) a family fraction count file, (3) a fraction count file.  data_sort.py uses the file sampleinfo_pairings2.csv to group the data in these folders according to the experiment they correspond to.  The experiments involve various imposed enviornmental factors like serum starvation, mek inhibition, etc.  data_sort.py utilizes the pandas dataframe package of python. The inputs of this module are the folders contained in data/raw_data/ in this repository.  This module has now output.
